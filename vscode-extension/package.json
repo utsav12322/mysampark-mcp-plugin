@@ -4,6 +4,7 @@
   "description": "Connect VS Code to your MySampark account — manage products and social media campaigns without leaving the editor.",
   "version": "1.0.0",
   "publisher": "mysampark",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.99.0"
   },
