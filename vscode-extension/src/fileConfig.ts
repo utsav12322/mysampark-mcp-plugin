@@ -85,6 +85,48 @@ export function syncCodexConfig(token: string | undefined): void {
   fs.writeFileSync(filePath, TOML.stringify(config), 'utf8');
 }
 
+/**
+ * Antigravity IDE (Google's VS Code fork) also doesn't read vscode.lm
+ * registrations or .mcp.json — it has its own workspace-local
+ * .agents/mcp_config.json, and its remote-server schema uses `serverUrl`
+ * (not `url`/`httpUrl` — those are explicitly rejected as legacy fields).
+ */
+export function syncAntigravityConfig(token: string | undefined): void {
+  const folder = vscode.workspace.workspaceFolders?.[0];
+  if (!folder) {
+    return;
+  }
+
+  const dir = path.join(folder.uri.fsPath, '.agents');
+  const filePath = path.join(dir, 'mcp_config.json');
+
+  let config: any = {};
+  if (fs.existsSync(filePath)) {
+    try {
+      config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch {
+      return;
+    }
+  }
+
+  config.mcpServers ??= {};
+
+  if (!token) {
+    delete config.mcpServers[SERVER_NAME];
+  } else {
+    config.mcpServers[SERVER_NAME] = {
+      serverUrl: SERVER_URL,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
+
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n', 'utf8');
+  ensureGitignored(folder.uri.fsPath, '.agents/mcp_config.json');
+}
+
 /** Add a line to .gitignore if it's missing — a token-bearing .mcp.json
  *  should never land in version control. Best-effort; never throws. */
 function ensureGitignored(folderPath: string, entry: string): void {
@@ -102,7 +144,7 @@ function ensureGitignored(folderPath: string, entry: string): void {
   }
 }
 
-/** Runs both syncs, surfacing failures without throwing. */
+/** Runs all syncs, surfacing failures without throwing. */
 export function syncAllFileConfigs(token: string | undefined): void {
   try {
     syncClaudeCodeConfig(token);
@@ -114,5 +156,11 @@ export function syncAllFileConfigs(token: string | undefined): void {
     syncCodexConfig(token);
   } catch (err) {
     vscode.window.showWarningMessage(`Couldn't update ~/.codex/config.toml: ${err}`);
+  }
+
+  try {
+    syncAntigravityConfig(token);
+  } catch (err) {
+    vscode.window.showWarningMessage(`Couldn't update .agents/mcp_config.json: ${err}`);
   }
 }

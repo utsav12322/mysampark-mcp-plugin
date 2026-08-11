@@ -15,17 +15,19 @@ tool is used, the extension prompts for your API token (from
 [socialpilot-clone](https://github.com/utsav12322/socialpilot-clone) repo)
 and stores it in VS Code's encrypted `SecretStorage`.
 
-**Claude Code** (the "Claude Code for VS Code" extension and its CLI) and
-**Codex** (VS Code extension and CLI) each have their *own* MCP config file
-and don't read `vscode.lm` registrations at all — so the same token prompt
-also writes:
+**Claude Code** (the "Claude Code for VS Code" extension and its CLI),
+**Codex** (VS Code extension and CLI), and **Antigravity IDE** (Google's VS
+Code fork) each have their *own* MCP config file/schema and don't read
+`vscode.lm` registrations at all — so the same token prompt also writes:
 
-- `.mcp.json` at the current workspace root (for Claude Code) — auto-added
-  to `.gitignore` since it contains the token
-- `~/.codex/config.toml` (for Codex, shared with its CLI)
+- `.mcp.json` at the workspace root (Claude Code) — `{ mcpServers: { url, headers } }`
+- `~/.codex/config.toml` (Codex, shared with its CLI) — `[mcp_servers.*]` + `http_headers`
+- `.agents/mcp_config.json` at the workspace root (Antigravity) — `{ mcpServers: { serverUrl, headers } }`
 
-All three stay in sync from the one prompt; running **MySampark: Update API
-Token** or **MySampark: Sign Out** updates/clears all three at once.
+Both workspace files are auto-added to `.gitignore` since they contain the
+token. All four surfaces stay in sync from the one prompt; running
+**MySampark: Update API Token** or **MySampark: Sign Out** updates/clears
+all of them at once.
 
 ## Commands
 

@@ -9,9 +9,10 @@ const SECRET_KEY = 'mysampark-mcp.apiToken';
  * Prompts for the MySampark API token (from POST /api/token, see
  * docs/mcp-server-setup.md in the main repo) and stores it in VS Code's
  * encrypted SecretStorage for our own vscode.lm-based registration (used by
- * GitHub Copilot Chat) — AND writes it into .mcp.json / ~/.codex/config.toml,
- * since Claude Code and Codex each have their own config file and don't read
- * VS Code's native MCP provider API at all.
+ * GitHub Copilot Chat) — AND writes it into .mcp.json, ~/.codex/config.toml,
+ * and .agents/mcp_config.json, since Claude Code, Codex, and Antigravity IDE
+ * each have their own config file/schema and don't read VS Code's native MCP
+ * provider API at all.
  */
 async function promptForToken(secrets: vscode.SecretStorage): Promise<string | undefined> {
   const token = await vscode.window.showInputBox({
