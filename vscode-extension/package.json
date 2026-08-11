@@ -9,8 +9,21 @@
     "vscode": "^1.99.0"
   },
   "categories": [
+    "AI",
+    "Chat",
     "Other"
   ],
+  "keywords": [
+    "mcp",
+    "model context protocol",
+    "mysampark",
+    "ecommerce",
+    "social media"
+  ],
+  "homepage": "https://mysampark.com",
+  "bugs": {
+    "url": "https://github.com/utsav12322/socialpilot-clone/issues"
+  },
   "activationEvents": [
     "onStartupFinished"
   ],

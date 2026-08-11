@@ -1,65 +1,147 @@
-# MySampark MCP — VS Code Extension
+<p align="center">
+  <img src="icon.png" width="96" alt="MySampark logo" />
+</p>
 
-Thin wrapper extension: install it, paste your MySampark API token once when
-prompted, and every AI surface in VS Code is connected to your MySampark
-account via MCP — no manual config editing, and it works across tools that
-each have their own, mutually incompatible way of discovering MCP servers.
+<h1 align="center">MySampark MCP</h1>
 
-## What it does
+<p align="center">
+  Connect your MySampark account to any AI assistant in your editor —
+  manage products and social media campaigns without leaving the code.
+</p>
 
-On activation, registers an MCP server definition provider for
-`https://mcp.mysampark.com/api/mcp` via VS Code's native `vscode.lm` API —
-this is what **GitHub Copilot Chat** (Agent mode) reads. The first time a
-tool is used, the extension prompts for your API token (from
-`POST /api/token` — see `docs/mcp-server-setup.md` in the main
-[socialpilot-clone](https://github.com/utsav12322/socialpilot-clone) repo)
-and stores it in VS Code's encrypted `SecretStorage`.
+---
 
-**Claude Code** (the "Claude Code for VS Code" extension and its CLI),
-**Codex** (VS Code extension and CLI), and **Antigravity IDE** (Google's VS
-Code fork) each have their *own* MCP config file/schema and don't read
-`vscode.lm` registrations at all — so the same token prompt also writes:
+## What this is
 
-- `.mcp.json` at the workspace root (Claude Code) — `{ mcpServers: { url, headers } }`
-- `~/.codex/config.toml` (Codex, shared with its CLI) — `[mcp_servers.*]` + `http_headers`
-- `.agents/mcp_config.json` at the workspace root, and the global
-  `~/.gemini/config/mcp_config.json` (Antigravity) — `{ mcpServers: { serverUrl, headers } }`
-- VS Code's own **user-scope** `mcp.json` (`~/Library/Application Support/Code/User/mcp.json`
-  on macOS, equivalent path on Windows/Linux — same schema as `.vscode/mcp.json`
-  but global) — this is a *separate* registration path from the `vscode.lm`
-  provider above, confirmed by testing: entries here show up under "MCP
-  SERVERS - INSTALLED" independently of the dynamic registration
+MySampark is a platform for managing product catalogs and social media
+campaigns (Facebook, Instagram, and more). This extension connects that
+account to the [Model Context Protocol](https://modelcontextprotocol.io)
+(MCP), so any AI assistant that supports MCP — GitHub Copilot Chat, Claude
+Code, Codex, or the AI features built into VS Code and Antigravity IDE — can
+read and act on your MySampark data directly from a chat prompt.
 
-Workspace files are auto-added to `.gitignore` since they contain the token.
-All these surfaces stay in sync from the one prompt; running **MySampark:
-Update API Token** or **MySampark: Sign Out** updates/clears all of them at
-once.
+**Install it once. Paste your token once. Every AI surface in the editor
+picks it up automatically** — no manual JSON/TOML editing, no separate setup
+per tool.
+
+## Features
+
+- 🔑 **One-time setup** — a single prompt for your API token, right after
+  install
+- 🔒 **Secure by default** — the token lives in VS Code's encrypted
+  `SecretStorage`; it's written to config files only where a given tool
+  *requires* a file (see [Supported surfaces](#supported-surfaces)), and
+  those files are automatically added to `.gitignore`
+- 🧩 **Multi-surface** — configures every AI assistant your editor exposes
+  in one step, not just one
+- 🛠️ **Six tools**: list/create/update/delete products, create campaigns,
+  update campaign posts
+
+## Install
+
+1. Install **MySampark MCP** from the VS Code Marketplace (search
+   "MySampark" in the Extensions view), or download the latest `.vsix` from
+   [Releases](https://github.com/utsav12322/mysampark-mcp-plugin/releases)
+   and use **Extensions: Install from VSIX...**
+2. A notification appears: *"Connect your MySampark account to use its
+   tools in chat."* Click **Enter API Token**.
+3. Paste your token — generate one from your MySampark account
+   (`POST /api/token`; see
+   [`docs/mcp-server-setup.md`](https://github.com/utsav12322/socialpilot-clone/blob/main/docs/mcp-server-setup.md)
+   in the main repo for the full API).
+
+That's it. Ask your AI assistant something like *"List my MySampark
+products"* to confirm it's connected.
+
+## Supported surfaces
+
+| Surface | How it connects |
+|---|---|
+| GitHub Copilot Chat (Agent mode) | VS Code's native `vscode.lm` provider API — no file written |
+| VS Code's own MCP servers list | User-scope `mcp.json` |
+| Claude Code (extension + CLI) | Workspace `.mcp.json` |
+| Codex (extension + CLI) | `~/.codex/config.toml` |
+| Antigravity IDE | `~/.gemini/config/mcp_config.json` + workspace `.agents/mcp_config.json` |
+
+Each of these tools has its own, mutually incompatible way of discovering
+MCP servers — this extension exists specifically to paper over that, from
+one token prompt.
 
 ## Commands
 
-- **MySampark: Update API Token** — replace the stored token (e.g. after
-  regenerating it)
-- **MySampark: Sign Out** — clear the stored token
+Run from the Command Palette (`Cmd/Ctrl+Shift+P`):
 
-## Develop / test locally
+| Command | Effect |
+|---|---|
+| **MySampark: Update API Token** | Replace the stored token everywhere (e.g. after regenerating it) |
+| **MySampark: Sign Out** | Clear the token from every surface above |
+
+## Available tools
+
+| Tool | What it does |
+|---|---|
+| `list_products` | Search/fetch products |
+| `create_product` | Create a product |
+| `update_product` | Update a product by ID |
+| `delete_product` | Delete a product by ID |
+| `create_campaign` | Create a social media campaign from product IDs |
+| `update_campaign_post` | Update a single campaign post |
+
+## Example prompts
+
+- "List my active MySampark products"
+- "Add a new product: Blue T-shirt, ₹499, category Apparel"
+- "Create a campaign for products 12, 15, and 20"
+- "Mark product 42 as inactive"
+
+## Privacy & security
+
+- Your token is requested once and stored in VS Code's encrypted
+  `SecretStorage` (backed by the OS keychain).
+- Workspace config files this extension writes (`.mcp.json`,
+  `.agents/mcp_config.json`) contain the token in plain text, by the
+  requirements of the tools that read them — they are automatically added
+  to that workspace's `.gitignore` so they're never committed.
+- This extension only talks to `https://mcp.mysampark.com` — it makes no
+  other network requests and collects no telemetry.
+- Full server-side API docs: [mcp-server-setup.md](https://github.com/utsav12322/socialpilot-clone/blob/main/docs/mcp-server-setup.md).
+
+## Troubleshooting
+
+- **No prompt appeared on install** — run **MySampark: Update API Token**
+  from the Command Palette manually.
+- **A surface still doesn't see the server** — reload the window
+  (`Developer: Reload Window`) after entering the token; some tools only
+  read their config file at startup.
+- **Token stopped working** — regenerate one from your MySampark account
+  and run **MySampark: Update API Token** with the new value.
+
+## Development
 
 ```bash
 cd vscode-extension
 npm install
-npm run compile
+npm run compile   # type-checks, then bundles src/extension.ts with esbuild
 ```
 
-Press `F5` in VS Code (with this folder open) to launch an Extension
-Development Host with the extension loaded, then check the MCP servers list
-(Extensions view → MCP Servers, or Command Palette → "MCP: List Servers").
-
-## Package and publish
+Press `F5` (with this folder open) to launch an Extension Development Host
+with the extension loaded.
 
 ```bash
-npm install -g @vscode/vsce
-vsce package    # produces mysampark-mcp-1.0.0.vsix — test by installing it locally first
-vsce publish    # requires a Marketplace publisher account (Azure DevOps PAT)
+npx vsce package   # produces mysampark-mcp-<version>.vsix — install it
+                    # locally (Extensions: Install from VSIX...) to test
+                    # before publishing
+npx vsce publish    # requires a Marketplace publisher account (Azure DevOps PAT)
 ```
 
 See [Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 for setting up the `mysampark` publisher account before running `vsce publish`.
+
+## License
+
+[MIT](LICENSE)
+
+## Support
+
+- Issues: [github.com/utsav12322/socialpilot-clone/issues](https://github.com/utsav12322/socialpilot-clone/issues)
+- MCP server source: [socialpilot-clone](https://github.com/utsav12322/socialpilot-clone)
