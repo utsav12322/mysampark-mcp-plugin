@@ -87,25 +87,36 @@ export function syncCodexConfig(token: string | undefined): void {
 
 /**
  * Antigravity IDE (Google's VS Code fork) also doesn't read vscode.lm
- * registrations or .mcp.json — it has its own workspace-local
- * .agents/mcp_config.json, and its remote-server schema uses `serverUrl`
- * (not `url`/`httpUrl` — those are explicitly rejected as legacy fields).
+ * registrations or .mcp.json. Its docs describe two config locations — a
+ * global ~/.gemini/config/mcp_config.json and a workspace-local
+ * .agents/mcp_config.json — but in testing, the "Manage MCPs" panel only
+ * ever picked up the global one (freshly installed, it just contains a
+ * placeholder comment, not valid JSON — treated as empty below). We write
+ * both anyway, since the workspace-local one may matter for other surfaces.
+ * Schema uses `serverUrl` (not `url`/`httpUrl` — explicitly rejected as
+ * legacy fields per Antigravity's docs).
  */
 export function syncAntigravityConfig(token: string | undefined): void {
+  const globalPath = path.join(os.homedir(), '.gemini', 'config', 'mcp_config.json');
+  writeAntigravityConfigFile(globalPath, token);
+
   const folder = vscode.workspace.workspaceFolders?.[0];
-  if (!folder) {
-    return;
+  if (folder) {
+    const localPath = path.join(folder.uri.fsPath, '.agents', 'mcp_config.json');
+    writeAntigravityConfigFile(localPath, token);
+    ensureGitignored(folder.uri.fsPath, '.agents/mcp_config.json');
   }
+}
 
-  const dir = path.join(folder.uri.fsPath, '.agents');
-  const filePath = path.join(dir, 'mcp_config.json');
-
+function writeAntigravityConfigFile(filePath: string, token: string | undefined): void {
   let config: any = {};
   if (fs.existsSync(filePath)) {
     try {
       config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     } catch {
-      return;
+      // Freshly-installed Antigravity ships this file with a placeholder
+      // comment instead of JSON — not something worth preserving.
+      config = {};
     }
   }
 
@@ -122,9 +133,8 @@ export function syncAntigravityConfig(token: string | undefined): void {
     };
   }
 
-  fs.mkdirSync(dir, { recursive: true });
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n', 'utf8');
-  ensureGitignored(folder.uri.fsPath, '.agents/mcp_config.json');
 }
 
 /** Add a line to .gitignore if it's missing — a token-bearing .mcp.json
