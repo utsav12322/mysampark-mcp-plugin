@@ -1,0 +1,11 @@
+{
+  "name": "mysampark-mcp",
+  "description": "Manage MySampark products and social media campaigns across Facebook, Instagram, and more — directly from Claude Code.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MySampark",
+    "url": "https://mysampark.com"
+  },
+  "homepage": "https://mysampark.com",
+  "repository": "https://github.com/utsav12322/socialpilot-clone"
+}
