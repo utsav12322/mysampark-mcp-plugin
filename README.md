@@ -34,5 +34,19 @@ paste.
 
 ## Support
 
-- Docs: https://mysampark.com (see `docs/mcp-server-setup.md` in this repository)
+- Docs: see `docs/mcp-server-setup.md` in the [main MySampark repository](https://github.com/utsav12322/socialpilot-clone)
 - Issues: https://github.com/utsav12322/socialpilot-clone/issues
+
+## Maintaining this repo
+
+This repo holds all the *public-facing* MCP config in one place, separate
+from the private application codebase:
+
+- `server.json` — official [MCP Registry](https://registry.modelcontextprotocol.io)
+  listing. To publish a change: bump `version`, then run `mcp-publisher publish`
+  from this directory.
+- `.claude-plugin/plugin.json` + `.mcp.json` — Claude Code Plugin Directory
+  submission (`platform.claude.com/plugins/submit`).
+
+The actual server lives at `https://mcp.mysampark.com/api/mcp`, in the
+private `socialpilot-clone` repository.
