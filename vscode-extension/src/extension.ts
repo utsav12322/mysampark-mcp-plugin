@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { syncAllFileConfigs } from './fileConfig';
 
 const SERVER_LABEL = 'mysampark-mcp';
 const SERVER_URL = 'https://mcp.mysampark.com/api/mcp';
@@ -7,7 +8,10 @@ const SECRET_KEY = 'mysampark-mcp.apiToken';
 /**
  * Prompts for the MySampark API token (from POST /api/token, see
  * docs/mcp-server-setup.md in the main repo) and stores it in VS Code's
- * encrypted SecretStorage — never written to settings.json or .vscode/mcp.json.
+ * encrypted SecretStorage for our own vscode.lm-based registration (used by
+ * GitHub Copilot Chat) — AND writes it into .mcp.json / ~/.codex/config.toml,
+ * since Claude Code and Codex each have their own config file and don't read
+ * VS Code's native MCP provider API at all.
  */
 async function promptForToken(secrets: vscode.SecretStorage): Promise<string | undefined> {
   const token = await vscode.window.showInputBox({
@@ -19,6 +23,7 @@ async function promptForToken(secrets: vscode.SecretStorage): Promise<string | u
 
   if (token) {
     await secrets.store(SECRET_KEY, token);
+    syncAllFileConfigs(token);
   }
 
   return token;
@@ -81,6 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('mysampark-mcp.signOut', async () => {
       await context.secrets.delete(SECRET_KEY);
+      syncAllFileConfigs(undefined);
       onDidChangeEmitter.fire();
       vscode.window.showInformationMessage('MySampark token cleared.');
     })

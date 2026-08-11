@@ -35,13 +35,17 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "compile": "npm run check-types && npm run esbuild-base",
+    "check-types": "tsc --noEmit -p ./",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "watch": "npm run esbuild-base -- --watch"
   },
   "devDependencies": {
     "@types/node": "^20.x",
     "@types/vscode": "^1.99.0",
     "@vscode/vsce": "^3.9.2",
+    "esbuild": "^0.28.2",
+    "smol-toml": "^1.7.1",
     "typescript": "^5.x"
   },
   "repository": {
