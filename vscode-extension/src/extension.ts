@@ -85,6 +85,31 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showInformationMessage('MySampark token cleared.');
     })
   );
+
+  // Ask right away, once, instead of waiting for the user to find the MCP
+  // servers list and start it manually — that's the whole point of this
+  // extension over hand-editing .vscode/mcp.json. Doesn't block anything;
+  // dismissing it just means the lazy prompt in resolveMcpServerDefinition
+  // covers it whenever a tool actually gets used.
+  context.secrets.get(SECRET_KEY).then((existing) => {
+    if (existing) {
+      return;
+    }
+    vscode.window
+      .showInformationMessage(
+        'Connect your MySampark account to use its tools in chat.',
+        'Enter API Token'
+      )
+      .then((choice) => {
+        if (choice === 'Enter API Token') {
+          promptForToken(context.secrets).then((token) => {
+            if (token) {
+              onDidChangeEmitter.fire();
+            }
+          });
+        }
+      });
+  });
 }
 
 export function deactivate() {}
