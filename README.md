@@ -11,11 +11,21 @@ claude plugin marketplace add anthropics/claude-plugins-community
 /plugin install mysampark-mcp@claude-community
 ```
 
-## Authentication
+## Authentication (one-time, after install)
 
-The first time you use a tool, Claude Code opens your browser to sign in to
-your MySampark account and approve access (OAuth 2.0). No token to copy or
-paste.
+Claude Code doesn't yet support per-user secrets in a plugin's checked-in
+`.mcp.json` for HTTP servers, so the plugin can't prompt you for a token
+automatically. Run this once, with your own MySampark API token (generate one
+from your MySampark account — see `docs/mcp-server-setup.md` in the
+[main repository](https://github.com/utsav12322/socialpilot-clone)):
+
+```bash
+claude mcp remove mysampark-mcp    # drop the plugin's unauthenticated entry
+claude mcp add --transport http mysampark-mcp https://mcp.mysampark.com/api/mcp \
+  --header "Authorization: Bearer YOUR_TOKEN" --scope user
+```
+
+`--scope user` makes it available in every project, not just the current one.
 
 ## Available tools
 
@@ -47,6 +57,9 @@ from the private application codebase:
   from this directory.
 - `.claude-plugin/plugin.json` + `.mcp.json` — Claude Code Plugin Directory
   submission (`platform.claude.com/plugins/submit`).
+- `vscode-extension/` — a separate, thin VS Code extension that prompts for
+  and securely stores the API token, then auto-registers the same MCP server.
+  See its own [README](vscode-extension/README.md) for build/publish steps.
 
 The actual server lives at `https://mcp.mysampark.com/api/mcp`, in the
 private `socialpilot-clone` repository.

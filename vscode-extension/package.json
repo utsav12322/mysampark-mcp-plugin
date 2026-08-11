@@ -1,0 +1,50 @@
+{
+  "name": "mysampark-mcp",
+  "displayName": "MySampark MCP",
+  "description": "Connect VS Code to your MySampark account — manage products and social media campaigns without leaving the editor.",
+  "version": "1.0.0",
+  "publisher": "mysampark",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "mysamparkMcpProvider",
+        "label": "MySampark"
+      }
+    ],
+    "commands": [
+      {
+        "command": "mysampark-mcp.updateToken",
+        "title": "MySampark: Update API Token"
+      },
+      {
+        "command": "mysampark-mcp.signOut",
+        "title": "MySampark: Sign Out (clear stored token)"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.99.0",
+    "typescript": "^5.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utsav12322/mysampark-mcp-plugin",
+    "directory": "vscode-extension"
+  }
+}
