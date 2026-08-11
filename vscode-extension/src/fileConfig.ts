@@ -137,6 +137,71 @@ function writeAntigravityConfigFile(filePath: string, token: string | undefined)
   fs.writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n', 'utf8');
 }
 
+/**
+ * VS Code's own native MCP support also has a global "User scope" config —
+ * separate from both the workspace .vscode/mcp.json and our vscode.lm
+ * provider registration. Confirmed by hand-editing it: entries here show up
+ * under "MCP SERVERS - INSTALLED" the same as our dynamic registration does,
+ * so we keep both in sync rather than relying on just one.
+ */
+export function syncVSCodeUserConfig(token: string | undefined): void {
+  const dataDir = userDataDirName();
+  if (!dataDir) {
+    return; // Unrecognized host app — don't guess at a path.
+  }
+
+  const base =
+    process.platform === 'darwin'
+      ? path.join(os.homedir(), 'Library', 'Application Support', dataDir)
+      : process.platform === 'win32'
+        ? path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), dataDir)
+        : path.join(os.homedir(), '.config', dataDir);
+
+  const filePath = path.join(base, 'User', 'mcp.json');
+
+  let config: any = {};
+  if (fs.existsSync(filePath)) {
+    try {
+      config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    } catch {
+      return; // Malformed — don't clobber whatever the user has there.
+    }
+  }
+
+  config.servers ??= {};
+
+  if (!token) {
+    delete config.servers[SERVER_NAME];
+  } else {
+    config.servers[SERVER_NAME] = {
+      type: 'http',
+      url: SERVER_URL,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    };
+  }
+
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n', 'utf8');
+}
+
+/** Maps the running host app to its Application Support/config folder name.
+ *  Returns undefined for anything not explicitly recognized. */
+function userDataDirName(): string | undefined {
+  switch (vscode.env.appName) {
+    case 'Visual Studio Code':
+      return 'Code';
+    case 'Visual Studio Code - Insiders':
+      return 'Code - Insiders';
+    case 'Cursor':
+      return 'Cursor';
+    default:
+      return undefined;
+  }
+}
+
 /** Add a line to .gitignore if it's missing — a token-bearing .mcp.json
  *  should never land in version control. Best-effort; never throws. */
 function ensureGitignored(folderPath: string, entry: string): void {
@@ -172,5 +237,11 @@ export function syncAllFileConfigs(token: string | undefined): void {
     syncAntigravityConfig(token);
   } catch (err) {
     vscode.window.showWarningMessage(`Couldn't update .agents/mcp_config.json: ${err}`);
+  }
+
+  try {
+    syncVSCodeUserConfig(token);
+  } catch (err) {
+    vscode.window.showWarningMessage(`Couldn't update VS Code's user mcp.json: ${err}`);
   }
 }

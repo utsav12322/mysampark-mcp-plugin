@@ -22,12 +22,18 @@ Code fork) each have their *own* MCP config file/schema and don't read
 
 - `.mcp.json` at the workspace root (Claude Code) — `{ mcpServers: { url, headers } }`
 - `~/.codex/config.toml` (Codex, shared with its CLI) — `[mcp_servers.*]` + `http_headers`
-- `.agents/mcp_config.json` at the workspace root (Antigravity) — `{ mcpServers: { serverUrl, headers } }`
+- `.agents/mcp_config.json` at the workspace root, and the global
+  `~/.gemini/config/mcp_config.json` (Antigravity) — `{ mcpServers: { serverUrl, headers } }`
+- VS Code's own **user-scope** `mcp.json` (`~/Library/Application Support/Code/User/mcp.json`
+  on macOS, equivalent path on Windows/Linux — same schema as `.vscode/mcp.json`
+  but global) — this is a *separate* registration path from the `vscode.lm`
+  provider above, confirmed by testing: entries here show up under "MCP
+  SERVERS - INSTALLED" independently of the dynamic registration
 
-Both workspace files are auto-added to `.gitignore` since they contain the
-token. All four surfaces stay in sync from the one prompt; running
-**MySampark: Update API Token** or **MySampark: Sign Out** updates/clears
-all of them at once.
+Workspace files are auto-added to `.gitignore` since they contain the token.
+All these surfaces stay in sync from the one prompt; running **MySampark:
+Update API Token** or **MySampark: Sign Out** updates/clears all of them at
+once.
 
 ## Commands
 
