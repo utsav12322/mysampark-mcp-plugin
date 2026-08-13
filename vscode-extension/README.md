@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.png" width="96" alt="MySampark logo" />
+  <img src="https://socialadmin.mysampark.com/logo.png" width="96" alt="MySampark logo" />
 </p>
 
 <h1 align="center">MySampark MCP</h1>
