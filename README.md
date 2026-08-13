@@ -63,5 +63,12 @@ from the private application codebase:
   and securely stores the API token, then auto-registers the same MCP server.
   See its own [README](vscode-extension/README.md) for build/publish steps.
 
+**Testing the plugin locally from inside this repo:** don't run the
+`## Authentication` commands above from this directory — `claude mcp remove
+mysampark-mcp` with no `--scope` defaults to project scope and will strip the
+entry straight out of this repo's checked-in `.mcp.json`. If that happens,
+restore it with `git restore .mcp.json` before committing anything. Test
+authentication from a separate, unrelated project directory instead.
+
 The actual server lives at `https://mcp.mysampark.com/api/mcp`, in the
 private `socialpilot-clone` repository.
