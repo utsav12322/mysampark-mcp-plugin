@@ -2,7 +2,7 @@
   "name": "mysampark-mcp",
   "displayName": "MySampark MCP",
   "description": "Connect VS Code to your MySampark account — manage products and social media campaigns without leaving the editor.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "MySamparkMCP",
   "icon": "icon.png",
   "engines": {
