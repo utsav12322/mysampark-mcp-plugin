@@ -1,5 +1,6 @@
 {
   "name": "mysampark",
+  "description": "Official plugin marketplace for MySampark — manage products and social media campaigns from Claude Code.",
   "owner": {
     "name": "MySampark",
     "url": "https://mysampark.com"
