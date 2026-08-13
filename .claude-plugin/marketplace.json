@@ -1,0 +1,14 @@
+{
+  "name": "mysampark",
+  "owner": {
+    "name": "MySampark",
+    "url": "https://mysampark.com"
+  },
+  "plugins": [
+    {
+      "name": "mysampark-mcp",
+      "source": "./",
+      "description": "Manage MySampark products and social media campaigns across Facebook, Instagram, and more — directly from Claude Code."
+    }
+  ]
+}

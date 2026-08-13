@@ -7,8 +7,8 @@ leaving the terminal.
 ## Install
 
 ```bash
-claude plugin marketplace add anthropics/claude-plugins-community
-/plugin install mysampark-mcp@claude-community
+claude plugin marketplace add utsav12322/mysampark-mcp-plugin
+/plugin install mysampark-mcp@mysampark
 ```
 
 ## Authentication (one-time, after install)
@@ -54,8 +54,11 @@ from the private application codebase:
 - `server.json` — official [MCP Registry](https://registry.modelcontextprotocol.io)
   listing. To publish a change: bump `version`, then run `mcp-publisher publish`
   from this directory.
-- `.claude-plugin/plugin.json` + `.mcp.json` — Claude Code Plugin Directory
-  submission (`platform.claude.com/plugins/submit`).
+- `.claude-plugin/plugin.json` + `.mcp.json` — the Claude Code plugin itself
+  (this repo root doubles as the plugin source).
+- `.claude-plugin/marketplace.json` — a self-hosted marketplace listing that
+  plugin, so `claude plugin marketplace add utsav12322/mysampark-mcp-plugin`
+  works without waiting on a submission to a shared community marketplace.
 - `vscode-extension/` — a separate, thin VS Code extension that prompts for
   and securely stores the API token, then auto-registers the same MCP server.
   See its own [README](vscode-extension/README.md) for build/publish steps.
