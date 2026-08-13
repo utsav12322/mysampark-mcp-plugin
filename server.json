@@ -5,7 +5,7 @@
   "description": "Manage MySampark products and social media campaigns across Facebook, Instagram, and more.",
   "version": "1.0.1",
   "repository": {
-    "url": "https://github.com/utsav12322/socialpilot-clone",
+    "url": "https://github.com/utsav12322/mysampark-mcp-plugin",
     "source": "github"
   },
   "remotes": [
@@ -15,7 +15,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer token from your MySampark account. Generate one by logging in and calling POST /api/token (see docs/mcp-server-setup.md), then enter it here as: Bearer YOUR_TOKEN",
+          "description": "Bearer token from your MySampark account. Generate one by logging in and calling POST /api/token, then enter it here as: Bearer YOUR_TOKEN",
           "isRequired": true,
           "isSecret": true
         }

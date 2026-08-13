@@ -46,9 +46,7 @@ per tool.
 2. A notification appears: *"Connect your MySampark account to use its
    tools in chat."* Click **Enter API Token**.
 3. Paste your token — generate one from your MySampark account
-   (`POST /api/token`; see
-   [`docs/mcp-server-setup.md`](https://github.com/utsav12322/socialpilot-clone/blob/main/docs/mcp-server-setup.md)
-   in the main repo for the full API).
+   (`POST /api/token` on `https://mysampark.com`).
 
 That's it. Ask your AI assistant something like *"List my MySampark
 products"* to confirm it's connected.
@@ -104,7 +102,6 @@ Run from the Command Palette (`Cmd/Ctrl+Shift+P`):
   to that workspace's `.gitignore` so they're never committed.
 - This extension only talks to `https://mcp.mysampark.com` — it makes no
   other network requests and collects no telemetry.
-- Full server-side API docs: [mcp-server-setup.md](https://github.com/utsav12322/socialpilot-clone/blob/main/docs/mcp-server-setup.md).
 
 ## Troubleshooting
 
@@ -116,32 +113,11 @@ Run from the Command Palette (`Cmd/Ctrl+Shift+P`):
 - **Token stopped working** — regenerate one from your MySampark account
   and run **MySampark: Update API Token** with the new value.
 
-## Development
-
-```bash
-cd vscode-extension
-npm install
-npm run compile   # type-checks, then bundles src/extension.ts with esbuild
-```
-
-Press `F5` (with this folder open) to launch an Extension Development Host
-with the extension loaded.
-
-```bash
-npx vsce package   # produces mysampark-mcp-<version>.vsix — install it
-                    # locally (Extensions: Install from VSIX...) to test
-                    # before publishing
-npx vsce publish    # requires a Marketplace publisher account (Azure DevOps PAT)
-```
-
-See [Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
-for setting up the `mysampark` publisher account before running `vsce publish`.
-
 ## License
 
 [MIT](LICENSE)
 
 ## Support
 
-- Issues: [github.com/utsav12322/socialpilot-clone/issues](https://github.com/utsav12322/socialpilot-clone/issues)
-- MCP server source: [socialpilot-clone](https://github.com/utsav12322/socialpilot-clone)
+- Issues: [github.com/utsav12322/mysampark-mcp-plugin/issues](https://github.com/utsav12322/mysampark-mcp-plugin/issues)
+- Website: [mysampark.com](https://mysampark.com)

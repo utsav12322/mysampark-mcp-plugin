@@ -3,7 +3,7 @@
   "displayName": "MySampark MCP",
   "description": "Connect VS Code to your MySampark account — manage products and social media campaigns without leaving the editor.",
   "version": "1.0.0",
-  "publisher": "mysampark",
+  "publisher": "MySamparkMCP",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.99.0"
@@ -22,7 +22,7 @@
   ],
   "homepage": "https://mysampark.com",
   "bugs": {
-    "url": "https://github.com/utsav12322/socialpilot-clone/issues"
+    "url": "https://github.com/utsav12322/mysampark-mcp-plugin/issues"
   },
   "activationEvents": [
     "onStartupFinished"

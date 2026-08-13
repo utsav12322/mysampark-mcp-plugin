@@ -16,8 +16,7 @@ claude plugin marketplace add anthropics/claude-plugins-community
 Claude Code doesn't yet support per-user secrets in a plugin's checked-in
 `.mcp.json` for HTTP servers, so the plugin can't prompt you for a token
 automatically. Run this once, with your own MySampark API token (generate one
-from your MySampark account — see `docs/mcp-server-setup.md` in the
-[main repository](https://github.com/utsav12322/socialpilot-clone)):
+from your MySampark account at `https://mysampark.com`):
 
 ```bash
 claude mcp remove mysampark-mcp    # drop the plugin's unauthenticated entry
@@ -44,8 +43,8 @@ claude mcp add --transport http mysampark-mcp https://mcp.mysampark.com/api/mcp 
 
 ## Support
 
-- Docs: see `docs/mcp-server-setup.md` in the [main MySampark repository](https://github.com/utsav12322/socialpilot-clone)
-- Issues: https://github.com/utsav12322/socialpilot-clone/issues
+- Website: https://mysampark.com
+- Issues: https://github.com/utsav12322/mysampark-mcp-plugin/issues
 
 ## Maintaining this repo
 
